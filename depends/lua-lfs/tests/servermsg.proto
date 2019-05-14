@@ -1,0 +1,25 @@
+// See README.txt for information and build instructions.
+// syntax = "proto2";
+
+//message BackupTabledata {
+//	optional int32 id = 1;    //桌子ID
+//	 optional string name = 2;      //桌子名称 地址
+//}
+
+//message  Qbackupdata
+//{
+ // optional string roomsvr_id = 1;      //房间服务器id
+ // optional BackupTabledata backtabledata = 2;
+//}
+
+
+//message QrequestRecovery {
+ // optional string roomsvr_id = 1;      //房间服务器id
+ // optional int32 id = 2;    //桌子ID	
+//}
+
+//message ArequestRecovery {
+ // optional string roomsvr_id = 1;      //房间服务器id
+  //optional BackupTabledata backtabledata = 2;
+// }
+

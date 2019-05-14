@@ -1,0 +1,9 @@
+#Custom
+*.DS_Store
+logs
+*.pyc
+*.out
+~$*
+#service_setting
+configTool/tools/sconfig
+nohup.out

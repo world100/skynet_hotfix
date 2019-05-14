@@ -1,0 +1,83 @@
+---------------------------------------------------------
+-- base
+---------------------------------------------------------
+
+
+svr_name 	= "loginserver"		--服务器类型
+svr_id 		= "1" 				--服务器id
+root 		= "../"					--server所在目录
+base_root 	= "../../"
+--启动多少个工作线程。通常不要将它配置超过你实际拥有的 CPU 核心数。
+thread 		= 8                 	
+--启动的第一个服务以及其启动参数
+bootstrap 	= "snlua bootstrap"  
+start 		= "main"                   -- main script
+harbor 		= 0                        -- single node
+--skynet 内建的 skynet_error 这个 C API 将信息输出到什么文件中。如果 logger 配置为 nil ，将输出到标准输出。你可以配置一个文件名来将信息记录在特定文件中。
+logger 		= nil
+-- 默认为 true, 可以用来统计每个服务使用了多少 cpu 时间
+profile     = true
+
+
+setting_file = "$LOBSTER_SET_FILE"		--端口设置
+
+---------------------------------------------------------
+-- service path
+---------------------------------------------------------
+--写日志到目录
+logger_file = base_root.."logs/"..svr_name.."_"..svr_id.."/"
+--预加载文件
+preload 	= root.."common/base/preload.lua"
+lualoader	= base_root.."depends/skynet/lualib/loader.lua"
+--它决定了集群配置文件的路径。
+--cluster     = root.."config/cluster/"..cluster_file
+--用 C 编写的服务模块的位置
+cpath 		= base_root.."depends/skynet/cservice/?.so;"
+--将添加到 package.cpath 中的路径，供 require 调用。
+lua_cpath 	= base_root .. "depends/skynet/luaclib/?.so;"..
+			  base_root .. "depends/?.so;"
+
+--将添加到 package.path 中的路径，供 require 调用
+lua_path 	= base_root.."depends/skynet/service/?.lua;"..
+			base_root.."depends/skynet/lualib/?.lua;"..
+			base_root.."depends/lua-pbc/?.lua;"..
+			--框架部分
+			root.."common/proto/?.lua;"..
+			root.."common/base/?.lua;"..			
+			root.."common/conf/?.lua;"..			
+			root.."common/lang/?.lua;"..
+			root.."common/?.lua;" ..
+			root.."config/?.lua;" ..				
+			root..svr_name.."/?.lua;"..
+			root..svr_name.."/manager_service/?.lua;"..
+			root..svr_name.."/gate/?.lua;"..
+			root.."/?.lua;"
+
+
+--创建服务时查找文件的路径 ,注意不要有名字一样的服务
+luaservice	= lua_path
+--用 snax 框架编写的服务的查找路径。
+snax		= lua_path
+
+---------------------------------------------------------
+-- advance
+---------------------------------------------------------
+maxclient 		= 100				                -- 最大连接数
+mysql_maxconn 	= 10								-- mysql数据库最大连接数
+mysql_host 		= "$LOBSTER_MYSQL_HOST"				-- mysql数据库主机
+mysql_port 		= $LOBSTER_MYSQL_PORT				-- mysql数据库端口
+mysql_db 		= "$LOBSTER_MYSQL_DB_GAME"		    -- mysql数据库库名
+mysql_user 		= "$LOBSTER_MYSQL_USER"				-- mysql数据库帐号
+mysql_pwd 		= "$LOBSTER_MYSQL_PWD"				-- mysql数据库密码
+
+
+redis_maxinst 	= 1			                        -- redis最大实例数
+redis_host1 	= "$LOBSTER_REDIS_HOST"	            -- redis数据库IP
+redis_port1 	= "$LOBSTER_REDIS_PORT"             -- redis数据库端口
+redis_auth1 	= "$LOBSTER_REDIS_PWD"		        -- redis数据库密码
+
+pro_path 		= root .. svr_name
+config_root 	= root .. "config/"
+proto_config 	= root .. "proto/"
+
+--daemon = "./skynet.pid"
