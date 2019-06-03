@@ -10,7 +10,7 @@ local codecache = require "skynet.codecache"
 local Objects = class("Objects")
 
 function Objects:ctor()
-	self.tbObject = {}
+	self.objects = {}
 	self.tbFileTime = {}	--文件最后一次改动的时间 
 	self.file_postfix = ".lua" --后缀
 end
@@ -19,24 +19,24 @@ function Objects:add(object)
 	--一个类可能对应很多个对象
 	local class_name = object.getName()
 	-- print("____class_name__",class_name)
-	self.tbObject[class_name] = self.tbObject[class_name] or {}
-	table.insert(self.tbObject[class_name],object)
+	self.objects[class_name] = self.objects[class_name] or {}
+	table.insert(self.objects[class_name],object)
 end
 
 function Objects:get(class_name)	
-	return self.tbObject[class_name]
+	return self.objects[class_name]
 end
 
-function Objects:getOne(class_name)
-	if self.tbObject[class_name] then 
-		return self.tbObject[class_name][1]
-	end
-	return nil
-end
+-- function Objects:getOne(class_name)
+-- 	if self.objects[class_name] then 
+-- 		return self.objects[class_name][1]
+-- 	end
+-- 	return nil
+-- end
 
-function Objects:getAll()
-	return self.tbObject
-end
+-- function Objects:getAll()
+-- 	return self.objects
+-- end
 
 function Objects:_addFile(path)
 	local fileList = dir_list(path)	--目录下列表
