@@ -86,11 +86,13 @@ function Objects:replaceModule(moduleName,tbPath)
 	        old_module[k] = v
 	        for i,object in pairs(objects) do 
 		        object[k] = v
-		        if object.register and type(object.register)=="function" then --重新注册回调函数
-		        	object:register()
-		        end
 		    end
 	    end
+        for i,object in pairs(objects) do 
+	        if object.register and type(object.register)=="function" then --重新注册回调函数
+	        	object:register()
+	        end
+	    end	    
 	end
 	package.loaded[moduleName] = old_module
 	-- package.preload[moduleName] = old_module				

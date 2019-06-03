@@ -43,7 +43,7 @@ end
 
 function MessageHandler:test()
 	-- self.num = self.num + 1
-	skynet.error("_111____test_____self.num________",self.num)
+	skynet.error("_测试输出____test_____self.num________",self.num)
 	
 end
 
