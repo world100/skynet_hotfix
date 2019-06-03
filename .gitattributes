@@ -1,1 +1,3 @@
 *.lua linguist-language=lua
+*.h linguist-language=lua
+*.c linguist-language=lua
