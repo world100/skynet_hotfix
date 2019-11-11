@@ -4,7 +4,12 @@
 1. skynet 热更新功能演示, 热更分为已启动的服务的代码逻辑热更, 文件修改后新启动服务的同步更新
 2. debug.sh 启动后, 会开定时器不断启动新服务, 
 3. 在已启动服务manager_service里有定时器不断调用test函数
-4. 如果修改MessageHandler.lua 里的 test函数, 会看到输出的改变
+4. 修改MessageHandler.lua 里的 test函数改变输出内容
+5. python hotfix.py 会看到输出的改变
+
+原理是 clearcache 清除代码缓存后
+清除lua模块缓存 package.loaded[file_path] = nil
+对已创建的对象方法进行更新
 
 ![image1](/image1.png)
 <bar>

@@ -414,61 +414,82 @@ end
 ----------------------------------------------------------------------
 -- 
 function class(classname, super)
-	local superType = type(super)
-	local cls
-	if superType ~= 'function' and superType ~= 'table' then
-		superType = nil
-		super = nil
-	end
+    local superType = type(super)
+    local cls
+    if superType ~= 'function' and superType ~= 'table' then
+        superType = nil
+        super = nil
+    end
 
-	if superType == 'function' or (super and super.__ctype == 1) then
-		-- inherited from native C++ Object
-		cls = {}
-		if superType == 'table' then
-			-- copy fields from super
-			for k,v in pairs(super) do cls[k] = v end
-			cls.__create = super.__create
-			cls.super = super
-		else
-			cls.__create = super
-			cls.ctor = function() end
-		end
-		cls.__cname = classname
-		cls.__ctype = 1
+    if superType == 'function' or (super and super.__ctype == 1) then
+        -- inherited from native C++ Object
+        cls = {}
+        if superType == 'table' then
+            -- copy fields from super
+            for k,v in pairs(super) do cls[k] = v end
+            cls.__create = super.__create
+            cls.super = super
+        else
+            cls.__create = super
+            cls.ctor = function() end
+        end
+        cls.__cname = classname
+        cls.__ctype = 1
 
-		function cls.new(...)
-			local instance = cls.__create(...)
-			-- copy fields from class to  native object
-			for k, v in pairs(cls) do instance[k] = v end
-			instance.class = cls
-			instance:ctor(...)
-			return instance
-		end
-                cls.New = cls.new
-	else
-		-- inherited from Lua Object
-		if super then
-			cls = {}
-			setmetatable(cls, {__index = super})
-			cls.super = super
-		else
-			cls = {ctor = function() end}
-		end
-		cls.__cname = classname
-		cls.__ctype = 2 --lua
-		cls.__index = cls
-        function cls.getName()
+        function cls.new(...)
+            local instance = cls.__create(...)
+            -- copy fields from class to  native object
+            for k, v in pairs(cls) do instance[k] = v end
+            instance.class = cls
+            instance:ctor(...)
+
+            return instance
+        end
+        cls.New = cls.new
+    else
+        -- inherited from Lua Object
+        if super then
+            cls = {}
+            setmetatable(cls, {__index = super})
+            cls.super = super
+        else
+            cls = {ctor = function() end}
+        end
+        cls.__cname = classname
+        cls.__ctype = 2 --lua
+        cls.__index = cls
+        function cls.getClassName()
             return cls.__cname
         end
-		function cls.new(...)
-			local instance = setmetatable({}, cls)
-			instance.class = cls
-			instance:ctor(...)
-			return instance
-		end
+        function cls.new(...)
+            local instance = setmetatable({}, cls)
+            instance.class = cls
+            instance:ctor(...)
+            if global and type(global)=="table" and global.hotfix then 
+                global.hotfix:addObject(instance.__cmodule_name, instance)
+                local super_class = cls.super
+                while super_class do
+                    if super_class and super_class.__cmodule_name then
+                        --父类模块也加入热更
+                        global.hotfix:addObject(super.__cmodule_name, instance)   
+                    end       
+                    super_class = super_class.super
+                end         
+            end
+            return instance
+        end
         cls.New = cls.new
-	end
-	return cls
+    end
+    return cls
+end
+
+function import(module_name)
+    --获取模块名用于热更新
+    local class_module = require(module_name)
+    if class_module.__cname then --有名字的类才能更新
+        class_module.__cmodule_name = module_name
+    end
+    return class_module
 end
 
 function handler(obj, method)

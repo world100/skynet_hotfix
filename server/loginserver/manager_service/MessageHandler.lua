@@ -21,7 +21,7 @@ function MessageHandler:ctor(message_dispatch)
 	self.svr_id = skynet.getenv("svr_id") --
 
 	self.message_dispatch = message_dispatch	
-	
+	self.service_num = 0
 	self.num = 1 --	
 	self:register()
 	
@@ -38,12 +38,12 @@ end
 function MessageHandler:register()
 
 	self.message_dispatch:registerSelf('start', handler(self,self.start))
-	self.message_dispatch:registerSelf('hotfix_test', handler(self,self.onHotfixText))
+	self.message_dispatch:registerSelf('hotfix', handler(self,self.hotfixFile))
 end
 
 function MessageHandler:test()
 	-- self.num = self.num + 1
-	skynet.error("_测试输出____test_____self.num________",self.num)
+	skynet.error("_测试输出__2__test_____self.num___这是服务_____",self.service_num)
 	
 end
 
@@ -51,13 +51,15 @@ end
 ---------------------------------------------------------
 -- CMD
 ---------------------------------------------------------
-function MessageHandler:start()
+function MessageHandler:start(data)
+	self.service_num = data or 0
 	skynet.error("_____manager_service__start________")
 end
 
-function MessageHandler:onHotfixText(data)
-	self.num = self.num + 1
-	skynet.error("______onHotfixText____self.num________",self.num)
+function MessageHandler:hotfixFile(file_module)
+	if global.hotfix then 
+		global.hotfix:hotfixFile(file_module)
+	end
 	-- skynet.debug("__________data________",data)
 end
 
